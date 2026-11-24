@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#F4EFE4">
+<meta name="author" content="SeetalIT">
+<meta name="description" content="Norsk Ordtrener – Norwegisch-Wortschatz üben (A1 bis B1). Ein Projekt von SeetalIT (seetalit.ch).">
+<meta name="copyright" content="© 2026 SeetalIT">
+<title>Norsk Ordtrener · SeetalIT</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preload" href="fonts/nunito-sans-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    /* SeetalIT palette «Salbei und Creme» */
+    --paper:#F4EFE4; --card:#FFFDF8; --ink:#1A1A1A; --muted:#4A5347; --line:#D9DCCF;
+    --accent:#3E6B38; --accent-ink:#24421F; --accent-soft:#EDF3E9;
+    --warm:#3E6B38; --warm-ink:#2F5530; --warm-soft:#E6EFE2; --sage:#A7C9A0;
+    --ok:#2C7A3C; --ok-soft:#DDF0E0; --bad:#B3321F; --bad-soft:#F8DDD7;
+    --r:14px; --shadow:0 1px 2px rgba(31,42,43,.06),0 6px 18px rgba(31,42,43,.07);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html{font-size:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:1.0625rem;line-height:1.5;min-height:100dvh;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:"Fraunces",Georgia,serif;font-weight:700;letter-spacing:-.01em;line-height:1.15;margin:0}
+  h1{font-size:2rem} h2{font-size:1.5rem} h3{font-size:1.2rem}
+  p{margin:0}
+  .muted{color:var(--muted)} .small{font-size:.9375rem}
+  button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+  button:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid var(--accent-ink);outline-offset:2px}
+  .app{max-width:640px;margin:0 auto;padding:max(16px,env(safe-area-inset-top)) 16px 120px}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;margin-bottom:12px}
+  .brand{display:flex;align-items:center;gap:10px;min-height:44px;font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:1.25rem}
+  .brand .dot{display:inline-flex;align-items:center;justify-content:center;height:24px;padding:0 6px;border-radius:6px;background:var(--accent);color:#fff;font-family:"Nunito Sans",system-ui,sans-serif;font-weight:800;font-size:.8125rem;line-height:1}
+  .foot{max-width:640px;margin:0 auto;padding:0 16px calc(24px + env(safe-area-inset-bottom));text-align:center;color:var(--muted);font-size:.8125rem;letter-spacing:.01em}
+  .foot a{color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}
+  .foot a:hover{color:var(--ink);border-color:var(--ink)}
+  .foot b{font-family:"Nunito Sans",system-ui,sans-serif;font-weight:800;font-size:.9375rem;letter-spacing:-.01em;color:#1A1A1A;white-space:nowrap}
+  .foot b span{display:inline-block;background:#3E6B38;color:#fff;border-radius:.3em;padding:.08em .3em .12em;margin-left:.08em;font-size:.86em;line-height:1}
+  body.quiz .foot{display:none}
+  body:not(.quiz) .app{padding-bottom:40px}
+  .ghost{min-height:44px;min-width:44px;padding:0 14px;border-radius:999px;color:var(--accent-ink);font-weight:600;display:inline-flex;align-items:center;gap:8px;border:1.5px solid transparent}
+  .ghost:hover{background:var(--accent-soft)} .ghost:active{transform:scale(.97)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:18px;box-shadow:var(--shadow)}
+  .stack>*+*{margin-top:12px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:0 22px;border-radius:999px;font-weight:600;font-size:1.0625rem;transition:transform .12s ease,background .12s ease,box-shadow .12s ease;width:100%}
+  .btn:active{transform:scale(.98)}
+  .btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(62,107,56,.28)}
+  .btn-primary:hover{background:var(--accent-ink)}
+  .btn-primary:disabled{background:#A9B5A5;box-shadow:none;cursor:not-allowed}
+  .btn-secondary{background:var(--card);color:var(--accent-ink);border:1.5px solid var(--accent)}
+  .btn-secondary:hover{background:var(--accent-soft)}
+  .btn-warm{background:var(--accent-ink);color:#fff}
+  .btn-warm:hover{filter:brightness(.93)}
+  .row{display:flex;gap:10px;flex-wrap:wrap} .row>.btn{flex:1 1 180px}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:.8125rem;font-weight:600;background:var(--accent-soft);color:var(--accent-ink)}
+  .pill.warm{background:var(--warm-soft);color:var(--accent-ink)}
+  .pill.locked{background:#ECE7DB;color:var(--muted)}
+  /* lists */
+  .book{margin-top:22px}
+  .book h2{margin-bottom:4px}
+  .unit{margin-top:14px}
+  .unit h3{margin:0 0 8px;color:var(--accent-ink)}
+  .sub{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;min-height:64px;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);transition:transform .12s ease,border-color .12s ease}
+  .sub+.sub{margin-top:8px}
+  .sub:hover:not(:disabled){border-color:var(--accent);transform:translateY(-1px)}
+  .sub:active:not(:disabled){transform:scale(.99)}
+  .sub:disabled{opacity:.55;cursor:not-allowed;box-shadow:none}
+  .sub .t{font-weight:600} .sub .m{font-size:.875rem;color:var(--muted)}
+  .sub .arrow{color:var(--accent);font-size:1.4rem;line-height:1}
+  .fixbtn{display:block;width:100%;min-height:44px;margin-top:6px;padding:8px 16px;border-radius:12px;text-align:left;font-weight:600;color:var(--warm-ink);background:var(--warm-soft);border:1px solid #C9D4C5}
+  .fixbtn:hover{filter:brightness(.97)} .fixbtn:active{transform:scale(.99)}
+  /* quiz */
+  .qhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+  .qtype{font-size:.8125rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--warm-ink)}
+  .prompt{font-size:1.25rem;font-weight:500;line-height:1.4}
+  .prompt .gap{display:inline-block;min-width:4.5em;border-bottom:3px solid var(--accent);margin:0 .15em;height:1.2em;vertical-align:-.15em;border-radius:2px}
+  .prompt .word{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:1.6rem;color:var(--accent-ink)}
+  .prompt .wrong{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:1.6rem;color:var(--bad);text-decoration:underline wavy var(--bad)}
+  .hint{font-size:.9375rem;color:var(--muted);margin-top:6px}
+  .pattern{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:1.125rem;letter-spacing:.02em;color:var(--accent-ink);margin-top:10px;word-break:break-word}
+  .choices{display:grid;gap:10px;margin-top:16px}
+  .choice{min-height:56px;padding:12px 16px;text-align:left;background:var(--card);border:1.5px solid var(--line);border-radius:12px;font-size:1.0625rem;display:flex;align-items:center;gap:12px;transition:border-color .12s ease,background .12s ease,transform .12s ease}
+  .choice .k{flex:0 0 28px;height:28px;border-radius:8px;background:var(--accent-soft);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:.875rem}
+  .choice:hover:not(:disabled){border-color:var(--accent)} .choice:active:not(:disabled){transform:scale(.99)}
+  .choice.selected{border-color:var(--accent);background:var(--accent-soft)}
+  .choice.correct{border-color:var(--ok);background:var(--ok-soft)} .choice.correct .k{background:var(--ok);color:#fff}
+  .choice.wrong{border-color:var(--bad);background:var(--bad-soft)} .choice.wrong .k{background:var(--bad);color:#fff}
+  .choice:disabled{cursor:default}
+  input.answer{width:100%;min-height:56px;padding:12px 16px;font:inherit;font-size:1.125rem;border:1.5px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);margin-top:16px}
+  input.answer:focus{border-color:var(--accent)}
+  input.answer.correct{border-color:var(--ok);background:var(--ok-soft)}
+  input.answer.wrong{border-color:var(--bad);background:var(--bad-soft)}
+  .feedback{margin-top:14px;padding:12px 14px;border-radius:12px;font-weight:500;display:none}
+  .feedback.show{display:block}
+  .feedback.ok{background:var(--ok-soft);color:#1E5A2B} .feedback.bad{background:var(--bad-soft);color:#7C2214}
+  .feedback b{font-weight:700}
+  .actions{margin-top:16px}
+  /* progress bar */
+  .progress{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom));box-shadow:0 -6px 20px rgba(31,42,43,.06)}
+  .progress .inner{max-width:640px;margin:0 auto}
+  .progress .meta{display:flex;justify-content:space-between;font-size:.875rem;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .bar{height:12px;border-radius:999px;background:#E9E3D5;overflow:hidden}
+  .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent),#6F9A67);border-radius:999px;transition:width .3s ease}
+  /* result */
+  .score{text-align:center;padding:10px 0 6px}
+  .score .big{font-family:"Fraunces",Georgia,serif;font-size:4rem;font-weight:700;line-height:1;color:var(--accent-ink)}
+  .score .big.low{color:var(--muted)}
+  .ring{width:150px;height:150px;margin:0 auto 10px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--accent) calc(var(--p)*1%),#E9E3D5 0)}
+  .ring>div{width:118px;height:118px;border-radius:50%;background:var(--card);display:grid;place-items:center}
+  .mistakes{margin-top:16px}
+  .mistakes li{padding:8px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:.9375rem}
+  .mistakes li span:last-child{color:var(--ok);font-weight:600}
+  ul{list-style:none;margin:0;padding:0}
+  /* admin */
+  .toggle{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:8px 0;border-bottom:1px solid var(--line)}
+  .toggle:last-child{border-bottom:0}
+  .switch{position:relative;width:56px;height:32px;border-radius:999px;background:#C9CDBF;transition:background .15s ease;flex:0 0 auto}
+  .switch::before{content:"";position:absolute;inset:-8px -6px} /* 44 px hit area */
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s ease}
+  .switch[aria-checked="true"]{background:var(--accent)} .switch[aria-checked="true"]::after{transform:translateX(24px)}
+  .indent{padding-left:14px}
+  label{display:block;font-weight:600;font-size:.9375rem;margin-bottom:6px}
+  .field{margin-bottom:14px}
+  .note{background:var(--warm-soft);color:var(--accent-ink);padding:12px 14px;border-radius:12px;font-size:.9375rem}
+  .closed{text-align:center;padding:40px 10px}
+  .closed .big{font-size:3rem;margin-bottom:10px}
+  .toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:.9375rem;opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  /* book tabs */
+  .tabs{position:relative;display:flex;padding:4px;margin-top:18px;background:#E9E3D5;border-radius:999px}
+  .tabs .ind{position:absolute;top:4px;bottom:4px;left:4px;border-radius:999px;background:var(--card);box-shadow:0 1px 2px rgba(31,42,43,.08),0 3px 10px rgba(31,42,43,.08);transition:transform .28s cubic-bezier(.2,.8,.2,1)}
+  .tab{position:relative;z-index:1;flex:1 1 0;min-width:0;min-height:52px;padding:6px 10px;border-radius:999px;font-weight:600;font-size:.9375rem;line-height:1.2;color:var(--muted);transition:color .2s ease,transform .12s ease}
+  .tab:active{transform:scale(.97)}
+  .tab[aria-selected="true"]{color:var(--accent-ink)}
+  .tab .soon{display:block;font-size:.75rem;font-weight:500;color:var(--muted)}
+  .panel{animation:panelIn .26s ease both}
+  @keyframes panelIn{from{opacity:0;transform:translateY(6px)}}
+  .soon-card{margin-top:22px;text-align:center;padding:34px 18px}
+  .soon-card .big{font-size:2.6rem;margin-bottom:8px}
+  .linkbtn{display:inline-flex;align-items:center;min-height:44px;margin-top:8px;font-weight:600;color:var(--accent-ink);text-decoration:underline;text-underline-offset:3px}
+  .brand{white-space:nowrap}
+  /* ===== title page (splash): SeetalIT palette «Salbei und Creme», shown on every visit, app loads underneath ===== */
+  @font-face{font-family:"Nunito Sans";src:url("fonts/nunito-sans-800.woff2") format("woff2");font-weight:800;font-display:swap}
+  .splash{--sp-bg:#FFFDF8;--sp-hero:#E9E1CB;--sp-ink:#1A1A1A;--sp-grey:#4A5347;--sp-green:#3E6B38;--sp-dark:#24421F;--sp-sage:#A7C9A0;--sp-marker:#B9D4B2;--sp-mist:#EDF3E9}
+  body.splash-on{overflow:hidden}
+  body.splash-on .app,body.splash-on .foot{visibility:hidden}
+  .splash{position:fixed;inset:0;z-index:50;overflow:hidden;display:flex;flex-direction:column;background:radial-gradient(120% 85% at 50% 42%,var(--sp-bg) 0%,#F7F2E6 55%,var(--sp-hero) 100%);transition:opacity .38s ease,transform .38s cubic-bezier(.4,0,.2,1)}
+  .splash.out{opacity:0;transform:scale(1.04);pointer-events:none}
+  .sp-words{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+  .sp-words span{position:absolute;white-space:nowrap;font-family:"Fraunces",Georgia,serif;font-weight:600;color:var(--sp-green);opacity:var(--o,.14);animation:wIn 1.4s ease var(--in,0s) both,wFloat var(--d,9s) ease-in-out var(--in,0s) infinite alternate;will-change:transform}
+  .sp-words span.w{color:var(--sp-grey)}
+  @keyframes wIn{from{opacity:0}}
+  @keyframes wFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--x,10px),var(--y,-26px),0)}}
+  .sp-main{position:relative;flex:1 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:max(36px,env(safe-area-inset-top)) 20px calc(24px + env(safe-area-inset-bottom))}
+  .sp-main::before{content:"";position:absolute;left:50%;top:50%;width:min(680px,140vw);height:min(600px,115vh);transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(255,253,248,.97) 52%,rgba(255,253,248,0));pointer-events:none}
+  .sp-main>*{position:relative}
+  /* the whole logo lands like a rubber stamp */
+  .sp-logo{display:inline-flex;align-items:center;gap:.2rem;font-family:"Nunito Sans",system-ui,sans-serif;font-weight:800;font-size:2.4rem;letter-spacing:-.015em;line-height:1;color:var(--sp-ink);transform-origin:50% 60%;animation:stamp .55s cubic-bezier(.2,1.4,.4,1) .25s both}
+  .sp-logo .it{display:inline-block;background:var(--sp-green);color:#fff;border-radius:.4rem;padding:.12em .3em .16em;font-size:.82em;margin-left:.18rem;transform:rotate(-6deg);box-shadow:0 6px 18px rgba(62,107,56,.28)}
+  @keyframes stamp{0%{opacity:0;transform:scale(2.4) rotate(-9deg)}55%{opacity:1;transform:scale(.94) rotate(1.5deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+  .sp-thud{position:absolute;left:50%;top:50%;width:14rem;height:14rem;margin:-7rem 0 0 -7rem;border-radius:50%;background:radial-gradient(closest-side,rgba(167,201,160,.55),rgba(167,201,160,0));opacity:0;animation:thud .7s ease-out .5s both;pointer-events:none}
+  @keyframes thud{0%{opacity:.9;transform:scale(.3)}100%{opacity:0;transform:scale(1.6)}}
+  .sp-title{margin-top:26px;font-size:clamp(2.7rem,12.8vw,5.6rem);line-height:1;letter-spacing:-.025em;color:var(--sp-ink)}
+  .sp-title .ln{display:block;overflow:hidden;padding:.05em .08em .12em}
+  .sp-title .ln>span{display:inline-block;position:relative;animation:lineUp .75s cubic-bezier(.2,.8,.2,1) both}
+  .sp-title .ln:nth-child(1)>span{animation-delay:.85s}
+  .sp-title .ln:nth-child(2)>span{animation-delay:.97s;color:var(--sp-green)}
+  @keyframes lineUp{from{transform:translateY(108%)}}
+  .sp-title .mark{position:absolute;left:-.05em;right:-.07em;bottom:.07em;height:.28em;z-index:-1;border-radius:.12em;background:var(--sp-marker);transform-origin:left center;animation:draw .6s cubic-bezier(.6,0,.2,1) 1.5s both}
+  @keyframes draw{from{transform:scaleX(0)}}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}}
+  .sp-start{margin-top:36px;width:auto;min-width:220px;min-height:56px;font-size:1.125rem;background:var(--sp-green);color:#fff;box-shadow:0 6px 18px rgba(62,107,56,.28);animation:rise .5s ease 1.7s both}
+  .sp-start:hover{background:var(--sp-dark)}
+  .sp-start:focus-visible{outline-color:var(--sp-green)}
+  .sp-start .ar{display:inline-block;transition:transform .2s ease}
+  @media (hover:hover){ .sp-start:hover .ar{transform:translateX(4px)} }
+  .app.enter{animation:rise .38s cubic-bezier(.2,.8,.2,1) both}
+  @media (max-width:360px){ .brand{font-size:1rem;gap:8px} .ghost{padding:0 8px} .tab{font-size:.875rem;padding:6px 6px} }
+  @media (min-width:700px){ .choices{grid-template-columns:1fr 1fr} h1{font-size:2.4rem} .sp-logo{font-size:3rem} }
+  @media (prefers-reduced-motion:reduce){ *{transition:none!important;animation:none!important} }
+  /* ===== Norsk Ordtrener: Zusätze ===== */
+  .sub .num{flex:0 0 34px;height:34px;border-radius:10px;background:var(--accent-soft);color:var(--accent-ink);display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:.875rem}
+  .sub .lft{display:flex;align-items:center;gap:12px;min-width:0}
+  .sub .t{display:block;overflow-wrap:anywhere}
+  .keys{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .key{min-width:48px;min-height:44px;padding:0 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);font-size:1.125rem;font-weight:600;color:var(--accent-ink)}
+  .key:hover:not(:disabled){border-color:var(--accent);background:var(--accent-soft)} .key:active:not(:disabled){transform:scale(.96)}
+  .key:disabled{opacity:.45;cursor:default}
+  .keys .tip{font-size:.8125rem;color:var(--muted)}
+  .prompt .de{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:1.6rem;color:var(--accent-ink);overflow-wrap:anywhere}
+  .mean{font-size:1rem;color:var(--muted);margin-top:4px}
+  .choices.two{grid-template-columns:1fr 1fr}
+  .bulk{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .bulk .mini{min-height:44px;padding:0 14px;border-radius:999px;border:1.5px solid var(--accent);color:var(--accent-ink);font-weight:600;font-size:.9375rem;background:var(--card)}
+  .bulk .mini:hover{background:var(--accent-soft)}
+  .toggle .lbl{min-width:0;overflow-wrap:anywhere}
+  .tab .soon{white-space:nowrap}
+  .sub .m{display:block}
+  .pill{white-space:nowrap}
+  .progress .meta{gap:12px} .progress .meta span:first-child{white-space:nowrap} .progress .meta span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .prompt .pre{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:1.6rem;color:var(--accent-ink);white-space:pre}
+  .prompt .wrong{overflow-wrap:anywhere}
+  .mistakes li span span.muted{color:var(--muted);font-weight:400}
+</style>
+</head>
+<body class="splash-on">
+<!-- Titelseite. LOGO: für eine Logo-Datei das .sp-logo-Div ersetzen durch <img class="sp-logo" src="logo.svg" alt="SeetalIT" height="56"> -->
+<section class="splash" id="splash" aria-label="Norsk Ordtrener">
+  <div class="sp-words" id="spWords" aria-hidden="true"></div>
+  <div class="sp-main">
+    <i class="sp-thud" aria-hidden="true"></i>
+    <div class="sp-logo" role="img" aria-label="SeetalIT"><span aria-hidden="true">Seetal</span><span class="it" aria-hidden="true">IT</span></div>
+    <h1 class="sp-title"><span class="ln"><span>Norsk</span></span><span class="ln"><span>Ordtrener<i class="mark" aria-hidden="true"></i></span></span></h1>
+    <button class="btn sp-start" id="spStart">Los geht's <span class="ar" aria-hidden="true">→</span></button>
+  </div>
+</section>
+<div class="app" id="app"></div>
+<footer class="foot">Made in the Seetal by <b>Seetal<span>IT</span></b> · <a href="https://seetalit.ch" target="_blank" rel="noopener">seetalit.ch</a> · © 2026</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+// ===== ENGINE-START (pure logic, no DOM) =====
+let BOOKS = []; // filled by loadBooks(); SAMPLE_BOOKS is the offline fallback
+let UPCOMING = []; // books announced in books/index.json ("upcoming") but without word lists yet
+const SAMPLE_BOOKS = [
+  { id:"a1", title:"A1", level:"A1", sub:"Anfänger", units:[
+    { id:"k01", nr:1, title:"Personen und Familie", subs:[
+      { id:"1", title:"Personen und Familie", words:[
+        { id:"01-001", no:"en mann", de:"Mann", lvl:"A1", pos:"n", answers:["en mann","mann"], base:"mann", art:"en", wrong:["man"] },
+        { id:"01-002", no:"en kvinne", de:"Frau", lvl:"A1", pos:"n", answers:["en kvinne","kvinne","ei kvinne"], base:"kvinne", art:"en", wrong:["quinne","kvine","kwinne"] },
+        { id:"01-003", no:"et barn", de:"Kind", lvl:"A1", pos:"n", answers:["et barn","barn"], base:"barn", art:"et" },
+        { id:"01-004", no:"en gutt", de:"Junge", lvl:"A1", pos:"n", answers:["en gutt","gutt"], base:"gutt", art:"en", wrong:["gott"] },
+        { id:"01-005", no:"en jente", de:"Mädchen", lvl:"A1", pos:"n", answers:["en jente","jente","ei jente"], base:"jente", art:"en" },
+        { id:"01-008", no:"en familie", de:"Familie", lvl:"A1", pos:"n", answers:["en familie","familie"], base:"familie", art:"en", wrong:["familje","famillie"] },
+        { id:"01-014", no:"en søster", de:"Schwester", lvl:"A1", pos:"n", answers:["en søster","søster","ei søster"], base:"søster", art:"en", wrong:["soster","sester"] },
+        { id:"01-015", no:"en bror", de:"Bruder", lvl:"A1", pos:"n", answers:["en bror","bror"], base:"bror", art:"en" },
+        { id:"01-035", no:"en venn", de:"Freund", lvl:"A1", pos:"n", answers:["en venn","venn"], base:"venn", art:"en", wrong:["wenn","ven"] },
+        { id:"01-043", no:"et navn", de:"Name", lvl:"A1", pos:"n", answers:["et navn","navn"], base:"navn", art:"et", wrong:["nawn"] }
+      ]}
+    ]},
+    { id:"k06", nr:6, title:"Essen und Trinken", subs:[
+      { id:"1", title:"Essen und Trinken", words:[
+        { id:"06-004", no:"en frokost", de:"Frühstück", lvl:"A1", pos:"n", answers:["en frokost","frokost"], base:"frokost", art:"en", wrong:["frukost","frokåst"] },
+        { id:"06-008", no:"et brød", de:"Brot", lvl:"A1", pos:"n", answers:["et brød","brød"], base:"brød", art:"et", wrong:["brod","bred"] },
+        { id:"06-012", no:"en ost", de:"Käse", lvl:"A1", pos:"n", answers:["en ost","ost"], base:"ost", art:"en" },
+        { id:"06-027", no:"et vann", de:"Wasser", lvl:"A1", pos:"n", answers:["et vann","vann"], base:"vann", art:"et", wrong:["wann","van"] },
+        { id:"06-060", no:"å spise", de:"essen", lvl:"A1", pos:"v", answers:["å spise","spise"], base:"spise", wrong:["spisse"] },
+        { id:"06-061", no:"å drikke", de:"trinken", lvl:"A1", pos:"v", answers:["å drikke","drikke"], base:"drikke", wrong:["drike","dricke"] },
+        { id:"06-067", no:"sulten", de:"hungrig", lvl:"A1", pos:"x", answers:["sulten"], base:"sulten", wrong:["solten"] },
+        { id:"06-068", no:"tørst", de:"durstig", lvl:"A1", pos:"x", answers:["tørst"], base:"tørst", wrong:["torst","terst"] }
+      ]}
+    ]}
+  ]}
+];
+
+const TYPES = {
+  de2no:{ label:"Übersetzen",       input:"type"   },
+  no2de:{ label:"Bedeutung wählen", input:"choice" },
+  art:  { label:"en oder et?",      input:"choice" },
+  spell:{ label:"Fehler finden",    input:"type"   }
+};
+const POS_LABEL = {n:"Nomen", v:"Verb"};
+
+function shuffle(arr, rnd=Math.random){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function pick(arr, rnd=Math.random){ return arr[Math.floor(rnd()*arr.length)]; }
+// Tolerant beim Tippen: Gross/Klein, Akzente, Leerzeichen, Bindestriche, Satzzeichen egal; å=aa, æ=ae=ä, ø=oe=ö
+function norm(s){ return String(s||"").toLowerCase().replace(/å/g,"aa").replace(/[æä]/g,"ae").replace(/[øö]/g,"oe").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[’‘`´]/g,"'").replace(/[?.!,;:…()]+/g,"").replace(/[\s\-\/]+/g,"").trim(); }
+const answersOf=w=>(w.answers&&w.answers.length?w.answers:[w.no]);
+const baseOf=w=>w.base||w.no;
+const prefixOf=w=>w.pos==="n"&&w.art?w.art+" ":(w.pos==="v"?"å ":"");
+const typeable=w=>!w.nt;
+function checkTyped(answer, accepted){ const n=norm(answer); return !!n&&accepted.some(a=>norm(a)===n); }
+
+// "gifte seg" -> "g _ _ _ _   s _ _"  (first letter shown, one underscore per further letter, words separated)
+function letterPattern(ans){
+  return String(ans).split(/\s+/).map(word=>{
+    const ch=[...word]; return ch.map((c,i)=> i===0 ? c : (/[\p{L}\p{N}]/u.test(c) ? "_" : c)).join(" ");
+  }).join("   ");
+}
+// "Hütte, Ferienhaus" -> ["huette","ferienhaus"]: used to keep wrong choices from being a second correct answer
+function deParts(s){ return String(s||"").replace(/\([^)]*\)/g,"").split(/[,;\/]/).map(norm).filter(Boolean); }
+
+function supports(w, type){
+  switch(type){
+    case "de2no": return typeable(w);
+    case "no2de": return !!w.de;
+    case "art":   return !!w.art && !w.noart;
+    case "spell": return !!(w.wrong&&w.wrong.length) && typeable(w);
+  }
+  return false;
+}
+
+// choose 3 types for one run: translate (typed) + 2 random others that at least one word supports
+function chooseTypes(words, rnd=Math.random){
+  const first=words.some(w=>supports(w,"de2no"))?["de2no"]:[];
+  const others=["no2de","art","spell"].filter(t=>words.some(w=>supports(w,t)));
+  return [...first, ...shuffle(others,rnd).slice(0,3-first.length)];
+}
+
+function allWords(book){ const out=[]; book.units.forEach(u=>u.subs.forEach(s=>s.words.forEach(w=>out.push(w)))); return out; }
+
+function buildQuestion(w, type, pool, rnd=Math.random, near=null){
+  const T=TYPES[type];
+  const q={ wordId:w.id, no:w.no, de:w.de, type, label:T.label, input:T.input };
+  const posTxt=POS_LABEL[w.pos]?` (${POS_LABEL[w.pos]})`:"";
+  if(type==="de2no"){
+    q.prompt={kind:"de", text:w.de};
+    q.hint="Wie heisst das auf Norwegisch?"+posTxt+(w.pos==="n"?" Der Artikel ist freiwillig.":"");
+    q.accepted=[...answersOf(w), ...(w.alt||[])]; q.answer=w.no;
+    q.pattern=letterPattern(baseOf(w)); // first letters: keeps the question unambiguous when German has several translations
+  } else if(type==="spell"){
+    q.prompt={kind:"spell", pre:prefixOf(w), wrong:pick(w.wrong,rnd), de:w.de};
+    q.hint="Dieses Wort ist falsch geschrieben. Schreibe es richtig.";
+    q.accepted=answersOf(w); q.answer=w.no;
+  } else if(type==="art"){
+    q.prompt={kind:"art", word:baseOf(w), de:w.de};
+    q.hint="Welcher Artikel passt?";
+    q.answer=w.art; q.choices=["en","et"];
+  } else { // no2de
+    const ownNo=norm(baseOf(w)), own=new Set(deParts(w.de)), seen=new Set([norm(w.de)]);
+    const ok=o=>{ // not the word itself, not the same word in another sense, no overlapping German meaning
+      if(o.id===w.id||!o.de||norm(baseOf(o))===ownNo) return false;
+      if(seen.has(norm(o.de))) return false;
+      return !deParts(o.de).some(p=>own.has(p));
+    };
+    const wrongs=[];
+    const take=list=>{ for(const o of shuffle(list,rnd)){ if(wrongs.length>=3) break; if(ok(o)){ seen.add(norm(o.de)); wrongs.push(o.de); } } };
+    const nearL=near||[];
+    take(nearL.filter(o=>o.pos===w.pos));           // same chapter, same word class
+    if(wrongs.length<3) take(pool.filter(o=>o.pos===w.pos)); // same level, same word class
+    if(wrongs.length<3) take(nearL);
+    if(wrongs.length<3) take(pool);
+    q.prompt={kind:"mc", word:w.no}; q.hint="Wähle die richtige Übersetzung.";
+    q.answer=w.de; q.choices=shuffle([w.de,...wrongs],rnd);
+  }
+  return q;
+}
+
+// build a full run: every word once, random order, types spread evenly with fallback
+function buildRun(book, sub, onlyWordIds=null, rnd=Math.random){
+  let words=sub.words; if(onlyWordIds) words=words.filter(w=>onlyWordIds.includes(w.id));
+  const types=chooseTypes(words,rnd);
+  const pool=allWords(book);
+  const order=shuffle(words,rnd);
+  // balanced but not periodic: each word gets the least-used type it supports (ties broken at random)
+  const used={}; types.forEach(t=>used[t]=0);
+  const questions=order.map(w=>{
+    const cands=shuffle(types.filter(t=>supports(w,t)),rnd);
+    const t=cands.length?cands.reduce((a,b)=>used[b]<used[a]?b:a):"no2de";
+    used[t]=(used[t]||0)+1;
+    return buildQuestion(w,t,pool,rnd,sub.words);
+  });
+  return { types, questions };
+}
+// ===== ENGINE-END =====
+
+// ===== BACKEND: Supabase keeps the teacher switch + open chapters; students read, only a logged-in teacher writes =====
+const SUPABASE={ url:"https://dolfzjhmfwucinojymkh.supabase.co", key:"sb_publishable_p3LKwzUt27oZXMr--HcpQw_CKKhy92x" }; // publishable key: darf im Browser stehen, RLS schützt das Schreiben. Leer = Vorschau im lokalen Modus
+const MIS_KEY="norsk_mistakes_v1", CFG_KEY="norsk_cfg_local_v1", SESSION_KEY="norsk_admin_local";
+let sb=null, CFG={on:true,open:{}}, isTeacher=false, teacherEmail="";
+const LOCAL_MODE=()=>!sb; // file://, no server configured or CDN blocked: settings stay in this browser only
+const LOCAL_ADMIN={ user:"lehrer", pass:"norsk2026" }; // only used in LOCAL_MODE
+function initBackend(){
+  try{ if(window.supabase&&SUPABASE.url&&location.protocol!=="file:") sb=window.supabase.createClient(SUPABASE.url,SUPABASE.key); }catch(e){ sb=null; }
+}
+function defaultCfg(){ // local mode only: first two chapters of every level open so the preview is clickable
+  const open={}; BOOKS.forEach(b=>{ b.units.flatMap(u=>u.subs.map(s=>subKey(b,u,s))).slice(0,2).forEach(k=>open[k]=true); });
+  return {on:true,open};
+}
+async function fetchCfg(){
+  if(LOCAL_MODE()){ try{ const c=JSON.parse(localStorage.getItem(CFG_KEY)); CFG=(c&&typeof c==="object"&&c.open&&typeof c.open==="object")?{on:c.on!==false,open:c.open}:defaultCfg(); }catch(e){ CFG=defaultCfg(); } return; }
+  const {data,error}=await sb.from("settings").select("key,value");
+  if(error) throw error;
+  const c={on:true,open:{}};
+  (data||[]).forEach(r=>{ if(r.key==="app_on") c.on=r.value!==false; if(r.key==="open"&&r.value&&typeof r.value==="object"&&!Array.isArray(r.value)) c.open=r.value; });
+  CFG=c;
+}
+function loadCfg(){ return CFG; }
+function saveCfg(c){
+  CFG=c;
+  if(LOCAL_MODE()){ try{ localStorage.setItem(CFG_KEY,JSON.stringify(c)); }catch(e){} return; }
+  const now=new Date().toISOString();
+  sb.from("settings").upsert([{key:"app_on",value:c.on,updated_at:now},{key:"open",value:c.open,updated_at:now}])
+    .then(({error})=>{ if(error){ toast("Nicht gespeichert: "+(error.message||"Fehler")); fetchCfg().then(()=>{ if(view.name==="admin") render(); }).catch(()=>{}); } });
+}
+function subscribeCfg(){ // students see teacher changes without reloading
+  if(LOCAL_MODE()) return;
+  sb.channel("settings-live").on("postgres_changes",{event:"*",schema:"public",table:"settings"},async()=>{
+    try{ await fetchCfg(); }catch(e){ return; }
+    if(view.name==="home"||view.name==="admin") render();
+    else if(!CFG.on&&view.name!=="login") render(); // app switched off while a student is browsing
+  }).subscribe();
+}
+function localSession(){ try{ return !!sessionStorage.getItem(SESSION_KEY); }catch(e){ return !!window.__norskAdmin; } }
+function setLocalSession(on){ window.__norskAdmin=on; try{ if(on) sessionStorage.setItem(SESSION_KEY,"1"); else sessionStorage.removeItem(SESSION_KEY); }catch(e){} }
+async function refreshAuth(){
+  if(LOCAL_MODE()){ isTeacher=localSession(); teacherEmail=isTeacher?LOCAL_ADMIN.user:""; return; }
+  const {data}=await sb.auth.getSession(); isTeacher=!!(data&&data.session); teacherEmail=isTeacher?(data.session.user.email||""):"";
+}
+async function teacherLogin(email,password){
+  if(LOCAL_MODE()){ if(email===LOCAL_ADMIN.user&&password===LOCAL_ADMIN.pass){ setLocalSession(true); isTeacher=true; teacherEmail=email; return null; } return "Benutzername oder Passwort falsch."; }
+  const {error}=await sb.auth.signInWithPassword({email,password});
+  if(error) return "Anmeldung fehlgeschlagen. E-Mail und Passwort prüfen.";
+  await refreshAuth(); return null;
+}
+async function teacherLogout(){
+  if(LOCAL_MODE()){ setLocalSession(false); } else { await sb.auth.signOut(); }
+  isTeacher=false; teacherEmail="";
+}
+function subKey(b,u,s){ return `${b.id}/${u.id}/${s.id}`; }
+function isOpen(cfg,b,u,s){ return !!cfg.open[subKey(b,u,s)]; }
+function loadMistakes(){ try{ const m=JSON.parse(localStorage.getItem(MIS_KEY)); if(!m||typeof m!=="object") return {}; Object.keys(m).forEach(k=>{ if(!Array.isArray(m[k])) delete m[k]; }); return m; }catch(e){ return window.__norskMis||{}; } }
+function saveMistakes(m){ window.__norskMis=m; try{ localStorage.setItem(MIS_KEY,JSON.stringify(m)); }catch(e){} }
+
+// ===== STATE & RENDER =====
+const $app=document.getElementById("app");
+let view={name:"loading"}; let run=null; let loadError=null;
+
+// Word lists live in books/*.json (one file per level). Double-click preview (file://): fetch() is blocked there,
+// so the same data is loaded from books/offline.js; the built-in sample is the last fallback.
+function loadScript(src){ return new Promise((res,rej)=>{ const s=document.createElement("script"); s.src=src; s.onload=res; s.onerror=rej; document.head.appendChild(s); }); }
+async function loadBooks(){
+  if(location.protocol==="file:"){
+    try{ await loadScript("books/offline.js"); if(Array.isArray(window.NORSK_BOOKS)&&window.NORSK_BOOKS.length){ BOOKS=window.NORSK_BOOKS; return; } }catch(e){}
+    BOOKS=SAMPLE_BOOKS; return;
+  }
+  try{
+    const idx=await fetch("books/index.json",{cache:"no-cache"}).then(r=>{ if(!r.ok) throw new Error(r.status); return r.json(); });
+    const loaded=[];
+    for(const f of idx.books){ loaded.push(await fetch("books/"+f,{cache:"no-cache"}).then(r=>{ if(!r.ok) throw new Error(f+" "+r.status); return r.json(); })); }
+    BOOKS=loaded;
+    UPCOMING=(Array.isArray(idx.upcoming)?idx.upcoming:[]).filter(u=>u&&u.id&&u.title&&!loaded.some(b=>b.id===u.id));
+  }catch(e){
+    loadError="Die Wortlisten konnten nicht geladen werden ("+e.message+"). Bitte neu laden."; BOOKS=[];
+  }
+}
+async function boot(){
+  initBackend();
+  if(!sb&&SUPABASE.url&&location.protocol!=="file:"){ loadError="Der Server ist nicht erreichbar. Bitte Internetverbindung prüfen und neu laden."; }
+  await loadBooks();
+  if(!loadError){
+    try{ await Promise.all([fetchCfg(),refreshAuth()]); subscribeCfg(); }
+    catch(e){ // server configured but unreachable (offline, blocked host): say so. No silent local mode, otherwise chapters the teacher locked would open
+      sb=null; loadError="Der Server ist nicht erreichbar. Bitte Internetverbindung prüfen und neu laden.";
+    }
+  }
+  view={name:"home"}; render();
+}
+
+function h(html){ const t=document.createElement("template"); t.innerHTML=html.trim(); return t.content; }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function toast(msg){ const t=document.getElementById("toast"); t.textContent=msg; t.classList.add("show"); clearTimeout(t._x); t._x=setTimeout(()=>t.classList.remove("show"),1800); }
+function go(v){ view=v; render(); window.scrollTo({top:0}); }
+const nWords=n=>`${n} ${n===1?"Wort":"Wörter"}`;
+
+function render(){
+  $app.innerHTML="";
+  document.body.classList.toggle("quiz", view.name==="quiz");
+  const cfg=loadCfg();
+  const top=h(`<div class="topbar">
+      <button class="brand" id="home" aria-label="Norsk Ordtrener, Startseite"><span class="dot" aria-hidden="true">IT</span>Norsk Ordtrener</button>
+      <button class="ghost" id="teacher">${isTeacher?"Admin":"Lehrperson"}</button>
+    </div>`);
+  $app.appendChild(top);
+  $app.querySelector("#home").onclick=()=>go({name:"home"});
+  $app.querySelector("#teacher").onclick=()=>go({name: isTeacher?"admin":"login"});
+
+  if(view.name==="loading") return $app.appendChild(h(`<div class="card closed" aria-busy="true"><div class="big">📚</div><h2>Wörter werden geladen…</h2></div>`));
+  if(loadError) return $app.appendChild(h(`<div class="card closed"><div class="big">⚠️</div><h2>Da ist etwas schiefgegangen</h2><p class="muted" style="margin-top:8px">${esc(loadError)}</p><div class="actions"><button class="btn btn-secondary" onclick="location.reload()">Neu laden</button></div></div>`));
+  if(view.name==="login") return renderLogin();
+  if(view.name==="admin") return renderAdmin(cfg);
+  if(!cfg.on) return renderClosed();
+  if(view.name==="leave") return renderLeave();
+  if(view.name==="quiz") return renderQuiz();
+  if(view.name==="result") return renderResult();
+  renderHome(cfg);
+}
+
+function renderClosed(){
+  $app.appendChild(h(`<div class="card closed">
+    <div class="big">🔒</div><h2>Der Norsk Ordtrener ist gerade geschlossen</h2>
+    <p class="muted" style="margin-top:8px">Deine Lehrperson öffnet ihn, wenn es Zeit zum Üben ist.</p></div>`));
+}
+
+// ===== LEVEL TABS: one tab per level (+ announced ones as "folgt bald") =====
+const TAB_KEY="norsk_tab_v1";
+let curTab=null, shownTab=null; // shownTab = tab the indicator is currently on (for the slide animation)
+function tabList(){ return [...BOOKS.map(b=>({id:b.id,title:b.title,sub:b.sub||"",book:b})), ...UPCOMING.map(u=>({id:u.id,title:u.title,sub:"",book:null}))]; }
+function openCount(cfg,b){ let n=0; b.units.forEach(u=>u.subs.forEach(s=>{ if(isOpen(cfg,b,u,s)) n++; })); return n; }
+function activeTab(cfg,forStudents){
+  const tabs=tabList(); if(!tabs.length) return null;
+  if(curTab&&tabs.some(t=>t.id===curTab)) return curTab;
+  let stored=null; try{ stored=localStorage.getItem(TAB_KEY); }catch(e){}
+  const has=t=>t.book&&openCount(cfg,t.book)>0;
+  const st=tabs.find(t=>t.id===stored);
+  // students: prefer the remembered level if something is open there, else the first level with open chapters
+  if(forStudents){ if(st&&has(st)) return curTab=st.id; const firstOpen=tabs.find(has); if(firstOpen) return curTab=firstOpen.id; }
+  return curTab=(st||tabs[0]).id;
+}
+function setTab(id){ curTab=id; try{ localStorage.setItem(TAB_KEY,id); }catch(e){} render(); }
+function tabsHtml(active){
+  const tabs=tabList();
+  return `<div class="tabs" role="tablist" aria-label="Niveau">${tabs.length>1?`<span class="ind" aria-hidden="true"></span>`:""}${tabs.map(t=>`<button class="tab" role="tab" id="tab-${esc(t.id)}" aria-controls="panel" aria-selected="${t.id===active}" tabindex="${t.id===active?0:-1}" data-id="${esc(t.id)}">${esc(t.title)}<span class="soon">${t.book?esc(t.sub):"folgt bald"}</span></button>`).join("")}</div>`;
+}
+function wireTabs(root,active){
+  const tabs=tabList(); const el=root.querySelector(".tabs"); if(!el) return;
+  const btns=[...el.querySelectorAll(".tab")];
+  btns.forEach((b,i)=>{
+    b.onclick=()=>{ if(b.dataset.id!==active) setTab(b.dataset.id); };
+    b.onkeydown=e=>{ // arrow keys move between tabs (WAI-ARIA tabs pattern)
+      const d=e.key==="ArrowRight"?1:e.key==="ArrowLeft"?-1:0; if(!d&&e.key!=="Home"&&e.key!=="End") return;
+      e.preventDefault(); const j=e.key==="Home"?0:e.key==="End"?btns.length-1:(i+d+btns.length)%btns.length;
+      setTab(btns[j].dataset.id); const nb=document.getElementById("tab-"+btns[j].dataset.id); if(nb) nb.focus();
+    };
+  });
+  const ind=el.querySelector(".ind"); if(!ind) return;
+  const n=tabs.length, ai=Math.max(0,tabs.findIndex(t=>t.id===active)), pi=tabs.findIndex(t=>t.id===shownTab);
+  ind.style.width=`calc((100% - 8px) / ${n})`;
+  ind.style.transform=`translateX(${(pi<0?ai:pi)*100}%)`;
+  if(pi>=0&&pi!==ai) requestAnimationFrame(()=>requestAnimationFrame(()=>{ ind.style.transform=`translateX(${ai*100}%)`; }));
+  shownTab=active;
+}
+const subMeta=s=>nWords(s.words.length)+(s.note?" · "+s.note:"");
+
+function renderHome(cfg){
+  const mis=loadMistakes();
+  const active=activeTab(cfg,true);
+  const tab=tabList().find(t=>t.id===active);
+  const frag=h(`<div><h1>Wörter üben</h1><p class="muted" style="margin-top:6px">Wähle ein Kapitel. Jedes Wort kommt einmal, in zufälliger Reihenfolge.</p>${tabsHtml(active)}</div>`);
+  $app.appendChild(frag); wireTabs($app,active);
+  const panel=h(`<div class="panel" id="panel" role="tabpanel" aria-labelledby="tab-${esc(active||"")}"></div>`).firstElementChild;
+  $app.appendChild(panel);
+  if(!tab) return;
+  if(!tab.book){
+    panel.appendChild(h(`<div class="card soon-card"><div class="big" aria-hidden="true">📘</div><h2>${esc(tab.title)} folgt bald</h2><p class="muted" style="margin-top:8px">Die Wörter für dieses Niveau sind unterwegs. Deine Lehrperson schaltet sie frei, sobald sie bereit sind.</p></div>`));
+    return;
+  }
+  let anyOpen=false;
+  const b=tab.book;
+  const bookEl=h(`<section class="book"></section>`).firstElementChild;
+  b.units.forEach(u=>{
+    u.subs.forEach(s=>{
+      const open=isOpen(cfg,b,u,s); if(open) anyOpen=true;
+      const k=subKey(b,u,s); const nMis=(mis[k]||[]).length;
+      const btn=h(`<button class="sub" ${open?"":"disabled"}>
+          <span class="lft"><span class="num" aria-hidden="true">${esc(u.nr||"")}</span><span><span class="t">${esc(s.title)}</span><span class="m">${esc(subMeta(s))}</span></span></span>
+          <span>${open?'<span class="arrow" aria-hidden="true">→</span>':'<span class="pill locked">🔒 gesperrt</span>'}</span>
+        </button>`).firstElementChild;
+      if(open) btn.onclick=()=>startQuiz(b,u,s,null);
+      bookEl.appendChild(btn);
+      if(open&&nMis){ // mistakes-only shortcut right on the start page
+        const fix=h(`<button class="fixbtn">Nur ${nMis} Fehler üben</button>`).firstElementChild;
+        fix.onclick=()=>startQuiz(b,u,s,mis[k]); bookEl.appendChild(fix);
+      }
+    });
+  });
+  panel.appendChild(bookEl);
+  if(!anyOpen){
+    const other=tabList().find(t=>t.book&&t.id!==active&&openCount(cfg,t.book)>0);
+    const note=h(`<div class="note" style="margin-top:20px">In ${esc(tab.title)} ist noch kein Kapitel offen.${other?`<br><button class="linkbtn" id="toOther">Offene Kapitel in ${esc(other.title)} →</button>`:` Frag deine Lehrperson.`}</div>`).firstElementChild;
+    panel.prepend(note);
+    if(other) note.querySelector("#toOther").onclick=()=>setTab(other.id);
+  }
+  if(LOCAL_MODE()&&!SUPABASE.url) panel.appendChild(h(`<p class="small muted" style="margin-top:18px">Vorschau ohne Server: Freischaltungen gelten nur in diesem Browser.</p>`));
+}
+
+function startQuiz(b,u,s,onlyIds){
+  if(onlyIds){ onlyIds=onlyIds.filter(id=>s.words.some(w=>w.id===id)); if(!onlyIds.length){ toast("Keine Fehler mehr zu üben"); return go({name:"home"}); } }
+  const r=buildRun(b,s,onlyIds);
+  if(!r.questions.length){ toast("Dieses Kapitel hat noch keine Wörter"); return go({name:"home"}); }
+  run={book:b,unit:u,sub:s,onlyIds,types:r.types,questions:r.questions,i:0,results:[],answered:false,selected:null};
+  try{ history.pushState({norsk:"quiz"},""); }catch(e){}
+  go({name:"quiz"});
+}
+// Browser back during a quiz: ask instead of silently throwing the run away
+window.addEventListener("popstate",()=>{
+  if(view.name==="quiz"&&run&&run.results.length<run.questions.length){ view={name:"leave"}; render(); }
+  else if(view.name==="quiz"||view.name==="result"){ go({name:"home"}); }
+});
+function renderLeave(){
+  $app.appendChild(h(`<div class="card closed"><div class="big">⏸</div><h2>Quiz verlassen?</h2>
+    <p class="muted" style="margin-top:8px">Dein Fortschritt in diesem Durchgang geht verloren.</p>
+    <div class="row actions"><button class="btn btn-primary" id="stay">Weiter üben</button><button class="btn btn-secondary" id="leave">Verlassen</button></div></div>`));
+  $app.querySelector("#stay").onclick=()=>{ try{ history.pushState({norsk:"quiz"},""); }catch(e){}
+    if(run.answered){ run.answered=false; run.selected=null; if(run.i+1<run.questions.length) run.i++; else return finishRun(); } // question was already checked: continue with the next one
+    go({name:"quiz"}); };
+  $app.querySelector("#leave").onclick=()=>{ run=null; go({name:"home"}); };
+}
+
+function promptHtml(q){
+  const p=q.prompt;
+  if(p.kind==="de") return `<p class="prompt"><span class="de">${esc(p.text)}</span></p><p class="pattern" aria-label="Buchstabenmuster">${esc(q.pattern||"")}</p>`;
+  if(p.kind==="spell") return `<p class="prompt">Finde den Fehler:<br><span class="pre">${esc(p.pre||"")}</span><span class="wrong">${esc(p.wrong)}</span></p><p class="mean">Bedeutung: ${esc(p.de)}</p>`;
+  if(p.kind==="mc") return `<p class="prompt">Was bedeutet <span class="word">${esc(p.word)}</span>?</p>`;
+  if(p.kind==="art") return `<p class="prompt"><span class="gap" aria-label="Lücke"></span> <span class="word">${esc(p.word)}</span></p><p class="mean">Bedeutung: ${esc(p.de)}</p>`;
+  return "";
+}
+
+function renderQuiz(){
+  const q=run.questions[run.i]; const n=run.questions.length;
+  const card=h(`<div class="card">
+      <div class="qhead"><span class="qtype">${esc(q.label)}</span><span class="pill">${run.i+1} / ${n}</span></div>
+      ${promptHtml(q)}
+      <p class="hint">${esc(q.hint)}</p>
+      <div id="answerArea"></div>
+      <div class="feedback" id="fb" aria-live="polite" tabindex="-1"></div>
+      <div class="actions"><button class="btn btn-primary" id="check" disabled>Prüfen</button></div>
+    </div>`).firstElementChild;
+  $app.appendChild(card);
+  const area=card.querySelector("#answerArea"), fb=card.querySelector("#fb"), btn=card.querySelector("#check");
+  let getAnswer=()=>"";
+  if(q.input==="type"){
+    const inp=h(`<input class="answer" type="text" lang="nb" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Deine Antwort" placeholder="Antwort eintippen…">`).firstElementChild;
+    area.appendChild(inp); inp.oninput=()=>{ btn.disabled=!inp.value.trim(); };
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); e.stopPropagation(); if(!btn.disabled&&!run.answered) btn.click(); } });
+    // æ ø å for keyboards without them (ae / oe / aa are accepted as well)
+    const keys=h(`<div class="keys" role="group" aria-label="Norwegische Buchstaben">${["æ","ø","å"].map(c=>`<button type="button" class="key" data-c="${c}" aria-label="Buchstabe ${c} einfügen">${c}</button>`).join("")}<span class="tip">oder ae, oe, aa tippen</span></div>`).firstElementChild;
+    keys.querySelectorAll(".key").forEach(k=>{
+      k.onmousedown=e=>e.preventDefault(); // keep the cursor in the input
+      k.onclick=()=>{ if(inp.disabled) return; const a=inp.selectionStart??inp.value.length, z=inp.selectionEnd??inp.value.length;
+        inp.value=inp.value.slice(0,a)+k.dataset.c+inp.value.slice(z); inp.focus(); try{ inp.setSelectionRange(a+1,a+1); }catch(e){} btn.disabled=!inp.value.trim(); };
+    });
+    area.appendChild(keys);
+    getAnswer=()=>inp.value; setTimeout(()=>inp.focus(),50);
+    run._mark=(ok)=>{ inp.disabled=true; inp.classList.add(ok?"correct":"wrong"); keys.querySelectorAll(".key").forEach(k=>k.disabled=true); };
+  } else {
+    const list=h(`<div class="choices${q.choices.length===2?" two":""}" role="group" aria-label="Antworten"></div>`).firstElementChild;
+    q.choices.forEach((c,idx)=>{
+      const b=h(`<button class="choice" aria-pressed="false"><span class="k">${"ABCD"[idx]}</span><span>${esc(c)}</span></button>`).firstElementChild;
+      b.onclick=()=>{ list.querySelectorAll(".choice").forEach(x=>{x.classList.remove("selected");x.setAttribute("aria-pressed","false");}); b.classList.add("selected"); b.setAttribute("aria-pressed","true"); run.selected=c; btn.disabled=false; };
+      list.appendChild(b);
+    });
+    area.appendChild(list); getAnswer=()=>run.selected;
+    run._mark=(ok)=>{ list.querySelectorAll(".choice").forEach(x=>{ x.disabled=true; const val=x.lastElementChild.textContent; if(val===q.answer) x.classList.add("correct"); else if(x.classList.contains("selected")) x.classList.add("wrong"); }); };
+  }
+  btn.onclick=()=>{
+    if(!run.answered){
+      run._busy=true; setTimeout(()=>{ if(run) run._busy=false; },400); // double-tap guard: a 2nd tap right after Check must not skip the feedback
+      const a=getAnswer(); const ok=q.input==="type"?checkTyped(a,q.accepted):(a===q.answer);
+      run.results.push({wordId:q.wordId,no:q.no,de:q.de,type:q.type,ok,given:a,answer:q.answer});
+      run.answered=true; run._mark(ok);
+      fb.className="feedback show "+(ok?"ok":"bad");
+      const pair=`<b>${esc(q.no)}</b> = ${esc(q.de)}`;
+      fb.innerHTML=ok?`✓ Richtig! ${pair}`:`✗ Nicht ganz. Richtig ist: ${pair}`;
+      btn.textContent=run.i+1<n?"Weiter →":"Zum Ergebnis";
+      updateProgress();
+      fb.focus({preventScroll:true}); btn.scrollIntoView({block:"nearest",behavior:"smooth"});
+    } else {
+      if(run._busy) return;
+      run.answered=false; run.selected=null;
+      if(run.i+1<n){ run.i++; go({name:"quiz"}); } else finishRun();
+    }
+  };
+  $app.appendChild(h(`<div class="progress"><div class="inner"><div class="meta"><span id="pm">${run.results.length} von ${n} beantwortet</span><span>${esc(run.sub.title)}</span></div><div class="bar" role="progressbar" aria-label="Fortschritt" aria-valuemin="0" aria-valuemax="${n}" aria-valuenow="${run.results.length}"><i id="pbar" style="width:${run.results.length/n*100}%"></i></div></div></div>`));
+}
+function updateProgress(){ const n=run.questions.length; const el=document.getElementById("pbar"); if(el){ el.style.width=(run.results.length/n*100)+"%"; el.parentElement.setAttribute("aria-valuenow",run.results.length); } const m=document.getElementById("pm"); if(m) m.textContent=`${run.results.length} von ${n} beantwortet`; }
+
+function finishRun(){
+  const k=subKey(run.book,run.unit,run.sub); const mis=loadMistakes();
+  const prev=new Set(mis[k]||[]);
+  run.results.forEach(r=>{ if(r.ok) prev.delete(r.wordId); else prev.add(r.wordId); });
+  mis[k]=[...prev]; saveMistakes(mis);
+  go({name:"result"});
+}
+
+function renderResult(){
+  const n=run.results.length, c=run.results.filter(r=>r.ok).length, p=Math.round(c/n*100);
+  const wrong=run.results.filter(r=>!r.ok);
+  const k=subKey(run.book,run.unit,run.sub); const stored=loadMistakes()[k]||[];
+  const msg=p===100?"Perfekt! Alles richtig.":p>=80?"Stark – fast geschafft.":p>=50?"Guter Anfang. Übe die Fehler nochmals.":"Bleib dran – Übung macht den Meister.";
+  const card=h(`<div class="card">
+      <div class="score"><div class="ring" style="--p:${p}"><div><span class="big ${p<50?"low":""}" style="font-size:2.6rem">${p}%</span></div></div>
+        <h2>${esc(msg)}</h2><p class="muted" style="margin-top:6px">${c} von ${n} richtig · ${esc(run.sub.title)}</p></div>
+      ${wrong.length?`<div class="mistakes"><h3 style="font-size:1rem;margin-bottom:6px">Deine Fehler</h3><ul>${wrong.map(r=>`<li><span>${esc(r.no)} <span class="muted small">(${esc(TYPES[r.type].label)})</span></span><span>${esc(r.de)}</span></li>`).join("")}</ul></div>`:""}
+      <div class="row actions">
+        <button class="btn btn-primary" id="again">↻ Nochmals (alle Wörter)</button>
+        ${stored.length?`<button class="btn btn-warm" id="fix">Nur Fehler üben (${stored.length})</button>`:""}
+        <button class="btn btn-secondary" id="back">Zurück zu den Kapiteln</button>
+      </div></div>`).firstElementChild;
+  $app.appendChild(card); card.querySelector("h2").setAttribute("tabindex","-1"); card.querySelector("h2").focus({preventScroll:true});
+  card.querySelector("#again").onclick=()=>startQuiz(run.book,run.unit,run.sub,null);
+  const fix=card.querySelector("#fix"); if(fix) fix.onclick=()=>startQuiz(run.book,run.unit,run.sub,stored);
+  card.querySelector("#back").onclick=()=>go({name:"home"});
+}
+
+function renderLogin(){
+  const card=h(`<div class="card stack">
+      <h2>Login Lehrperson</h2>
+      ${LOCAL_MODE()?`<div class="note">Lokaler Modus (ohne Server): Benutzer <b>${esc(LOCAL_ADMIN.user)}</b>, Passwort <b>${esc(LOCAL_ADMIN.pass)}</b>. Einstellungen bleiben in diesem Browser.</div>`:``}
+      <form id="f" class="stack">
+        <div class="field"><label for="u">${LOCAL_MODE()?"Benutzername":"E-Mail"}</label><input class="answer" style="margin-top:0" id="u" type="${LOCAL_MODE()?"text":"email"}" autocomplete="username" autocapitalize="off" required></div>
+        <div class="field"><label for="p">Passwort</label><input class="answer" style="margin-top:0" id="p" type="password" autocomplete="current-password" required></div>
+        <p id="err" class="small" style="color:var(--bad);display:none"></p>
+        <button class="btn btn-primary" type="submit" id="loginBtn">Anmelden</button>
+      </form></div>`).firstElementChild;
+  $app.appendChild(card);
+  card.querySelector("#f").onsubmit=async e=>{ e.preventDefault();
+    const btn=card.querySelector("#loginBtn"), err=card.querySelector("#err"); btn.disabled=true; btn.textContent="Anmelden…"; err.style.display="none";
+    const msg=await teacherLogin(card.querySelector("#u").value.trim(), card.querySelector("#p").value);
+    if(!msg){ toast("Angemeldet"); go({name:"admin"}); }
+    else { err.textContent=msg; err.style.display="block"; btn.disabled=false; btn.textContent="Anmelden"; }
+  };
+}
+
+function renderAdmin(cfg){
+  const wrap=h(`<div class="stack">
+      <div class="card">
+        <div class="toggle"><div><b>App online</b><br><span class="small muted">Aus = Schüler sehen «geschlossen».</span></div>
+          <button class="switch" role="switch" aria-checked="${cfg.on}" id="appOn" aria-label="App online"></button></div>
+      </div>
+      <div class="card" id="units"><h3 style="margin-bottom:6px">Offene Kapitel</h3><p class="small muted">Nur offene Kapitel können geübt werden.</p>${tabsHtml(activeTab(cfg,false))}</div>
+      <div class="row"><button class="btn btn-secondary" id="logout">Abmelden${teacherEmail?` (${esc(teacherEmail)})`:""}</button></div>
+      <p class="small muted">${LOCAL_MODE()?"Lokaler Modus: Einstellungen sind nur in diesem Browser gespeichert.":"Änderungen werden auf dem Server gespeichert und sind in wenigen Sekunden auf allen Geräten sichtbar."}</p>
+    </div>`).firstElementChild;
+  $app.appendChild(wrap);
+  const sw=wrap.querySelector("#appOn");
+  sw.onclick=()=>{ cfg.on=!cfg.on; saveCfg(cfg); sw.setAttribute("aria-checked",cfg.on); toast(cfg.on?"App ist online":"App ist offline"); };
+  const units=wrap.querySelector("#units");
+  const active=activeTab(cfg,false); wireTabs(units,active);
+  const tab=tabList().find(t=>t.id===active);
+  if(tab&&!tab.book) units.appendChild(h(`<p class="note" style="margin-top:16px">${esc(tab.title)}: Wortliste noch nicht hochgeladen (books/ + index.json).</p>`));
+  if(tab&&tab.book){
+    const b=tab.book;
+    const bulk=h(`<div class="bulk"><button class="mini" id="allOn">Alle in ${esc(b.title)} öffnen</button><button class="mini" id="allOff">Alle in ${esc(b.title)} sperren</button></div>`).firstElementChild;
+    units.appendChild(bulk);
+    const setAll=on=>{ b.units.forEach(u=>u.subs.forEach(s=>{ cfg.open[subKey(b,u,s)]=on; })); saveCfg(cfg); toast(on?`Alle Kapitel in ${b.title} offen`:`Alle Kapitel in ${b.title} gesperrt`); render(); };
+    bulk.querySelector("#allOn").onclick=()=>setAll(true);
+    bulk.querySelector("#allOff").onclick=()=>setAll(false);
+    b.units.forEach(u=>{
+      u.subs.forEach(s=>{
+        const k=subKey(b,u,s);
+        const row=h(`<div class="toggle"><span class="lbl">${esc(u.nr||"")} · ${esc(s.title)} <span class="small muted">· ${esc(subMeta(s))}</span></span><button class="switch" role="switch" aria-checked="${!!cfg.open[k]}" aria-label="${esc(s.title)}"></button></div>`).firstElementChild;
+        const t=row.querySelector(".switch");
+        t.onclick=()=>{ cfg.open[k]=!cfg.open[k]; saveCfg(cfg); t.setAttribute("aria-checked",!!cfg.open[k]); toast((cfg.open[k]?"Offen: ":"Gesperrt: ")+s.title); };
+        units.appendChild(row);
+      });
+    });
+  }
+  wrap.querySelector("#logout").onclick=async()=>{ await teacherLogout(); toast("Abgemeldet"); go({name:"home"}); };
+}
+
+// Enter after an answer = Next (works for typed and choice questions)
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter"||view.name!=="quiz"||!run||!run.answered) return;
+  e.preventDefault(); const b=document.getElementById("check"); if(b) b.click();
+});
+// ===== TITLE PAGE: floating words + start =====
+(function splash(){
+  const el=document.getElementById("splash"); if(!el) return;
+  const W=["hyggelig","koselig","fjord","tusen takk","eventyr","nordlys","vennskap","reise","hjerte","språk","lykke","midnattssol","brunost","friluftsliv","kjærlighet","drøm","hav","fjell"];
+  const box=document.getElementById("spWords"); const narrow=innerWidth<600; const n=narrow?12:18;
+  for(let i=0;i<n;i++){ // spread over a grid so words don't pile up; centre stays readable thanks to the soft backdrop
+    const s=document.createElement("span"); s.textContent=W[i%W.length]; if(i%3===0) s.className="w";
+    const col=i%3, row=Math.floor(i/3), rows=Math.ceil(n/3);
+    s.style.left=(col*33+4+Math.random()*16)+"%"; s.style.top=(row*(92/rows)+3+Math.random()*(60/rows))+"%";
+    s.style.fontSize=(narrow?0.95:1.1)+Math.random()*(narrow?0.6:0.9)+"rem";
+    s.style.setProperty("--o",(0.10+Math.random()*0.09).toFixed(2));
+    s.style.setProperty("--d",(7+Math.random()*6).toFixed(1)+"s");
+    s.style.setProperty("--in",(0.2+Math.random()*1.2).toFixed(2)+"s");
+    s.style.setProperty("--x",Math.round(Math.random()*24-12)+"px"); s.style.setProperty("--y",Math.round(-14-Math.random()*22)+"px");
+    box.appendChild(s);
+  }
+  const start=()=>{
+    if(el.classList.contains("out")) return;
+    el.classList.add("out"); document.body.classList.remove("splash-on");
+    $app.classList.add("enter"); setTimeout(()=>{ el.remove(); $app.classList.remove("enter"); },420);
+  };
+  document.getElementById("spStart").onclick=start;
+})();
+render(); boot();
+
+</script>
+</body>
+</html>
