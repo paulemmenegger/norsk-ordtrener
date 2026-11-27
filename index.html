@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#F4EFE4">
+<meta name="theme-color" content="#2B2118">
 <meta name="author" content="SeetalIT">
 <meta name="description" content="Norsk Ordtrener – Norwegisch-Wortschatz üben (A1 bis B1). Ein Projekt von SeetalIT (seetalit.ch).">
 <meta name="copyright" content="© 2026 SeetalIT">
 <title>Norsk Ordtrener · SeetalIT</title>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preload" href="fonts/nunito-sans-800.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/metamorphous-400.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -206,6 +207,105 @@
   .prompt .pre{font-family:"Fraunces",Georgia,serif;font-weight:700;font-size:1.6rem;color:var(--accent-ink);white-space:pre}
   .prompt .wrong{overflow-wrap:anywhere}
   .mistakes li span span.muted{color:var(--muted);font-weight:400}
+  /* ===== Norsk Ordtrener: Thema «Wikinger» (Langschiff, Rundschilde, Runenband). Logo SeetalIT bleibt unverändert ===== */
+  @font-face{font-family:"Metamorphous";src:url("fonts/metamorphous-400.woff2") format("woff2");font-weight:400;font-display:swap}
+  :root{
+    --paper:#E9E1CE; --card:#F7F2E5; --ink:#1E1A16; --muted:#5A5148; --line:#CDBF9F;
+    --accent:#243447; --accent-ink:#16222F; --accent-soft:#DFE2DC;
+    --warm:#8E2A20; --warm-ink:#6E1F17; --warm-soft:#F1DCD3; --sage:#C2952F;
+    --gold:#C2952F; --wood:#2B2118;
+    --ok:#2C6B3E; --ok-soft:#DCEAD8; --bad:#A12C1E; --bad-soft:#F4DAD2;
+    --r:10px; --shadow:0 1px 0 rgba(30,26,22,.10),0 6px 16px rgba(30,26,22,.10);
+    --runes:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='284' height='16' viewBox='0 -1 284 18'%3E%3Cg fill='none' stroke='%23D9B14E' stroke-width='1.7' stroke-linecap='square' stroke-linejoin='miter'%3E%3Cpath transform='translate%280 0%29' d='M5 0V16M2 6L8 10'/%3E%3Cpath transform='translate%2817 0%29' d='M5 0L9 5L1 16M5 0L1 5L9 16'/%3E%3Cpath transform='translate%2834 0%29' d='M3 16V0L8 4L3 8L8 16'/%3E%3Cpath transform='translate%2851 0%29' d='M8 0L3 5L8 10L3 16'/%3E%3Cpath transform='translate%2868 0%29' d='M8 3L3 8L8 13'/%3E%3Cpath d='M88 5l2 3-2 3-2-3z' fill='%23D9B14E' stroke='none'/%3E%3Cpath transform='translate%28108 0%29' d='M5 0L9 5L1 16M5 0L1 5L9 16'/%3E%3Cpath transform='translate%28125 0%29' d='M3 16V0L8 4L3 8L8 16'/%3E%3Cpath transform='translate%28142 0%29' d='M2 0V16M8 0V16M2 0L8 16M8 0L2 16'/%3E%3Cpath transform='translate%28159 0%29' d='M5 0V16M1 4L5 0L9 4'/%3E%3Cpath transform='translate%28176 0%29' d='M3 16V0L8 4L3 8L8 16'/%3E%3Cpath transform='translate%28193 0%29' d='M2 16V0L5 4L8 0V16'/%3E%3Cpath transform='translate%28210 0%29' d='M5 0V16M2 6L8 10'/%3E%3Cpath transform='translate%28227 0%29' d='M2 16V0L5 4L8 0V16'/%3E%3Cpath transform='translate%28244 0%29' d='M3 16V0L8 4L3 8L8 16'/%3E%3Cpath d='M264 5l2 3-2 3-2-3z' fill='%23D9B14E' stroke='none'/%3E%3C/g%3E%3C/svg%3E");
+  }
+  body{background:var(--paper)}
+  body::before{content:"";display:block;height:30px;background:var(--wood) var(--runes) repeat-x center/auto 16px;border-bottom:2px solid var(--gold)}
+  /* Titelschrift nur für Titel, Reiter und Zahlen. Sätze (h2, h3) und Lernwörter bleiben in der klaren Schrift: in Metamorphous sieht d wie ð und u wie v aus */
+  h1,.brand,.score .big{font-family:"Metamorphous","Fraunces",Georgia,serif;font-weight:400;letter-spacing:.01em}
+  h1{font-size:2.1rem}
+  .brand{font-size:1.2rem} .brand .dot{background:#3E6B38}
+  .ghost{color:var(--accent-ink)}
+  .card{border:2px solid var(--wood);border-radius:var(--r);background:radial-gradient(circle at 11px 11px,var(--gold) 0 2.5px,transparent 3px),radial-gradient(circle at calc(100% - 11px) 11px,var(--gold) 0 2.5px,transparent 3px),radial-gradient(circle at 11px calc(100% - 11px),var(--gold) 0 2.5px,transparent 3px),radial-gradient(circle at calc(100% - 11px) calc(100% - 11px),var(--gold) 0 2.5px,transparent 3px),var(--card);box-shadow:4px 5px 0 rgba(30,26,22,.16)}
+  .btn{border-radius:10px;letter-spacing:.02em}
+  .btn-primary{background:var(--warm);color:#FBF6E9;border:2px solid var(--wood);box-shadow:0 4px 0 var(--wood)}
+  .btn-primary:hover{background:var(--warm-ink)}
+  .btn-primary:active:not(:disabled),.btn-warm:active{transform:translateY(3px);box-shadow:0 1px 0 var(--wood)}
+  .btn-secondary:active{transform:translateY(3px);box-shadow:0 1px 0 var(--line)}
+  .btn-primary:disabled{background:#B5AA98;border-color:#8E8474;box-shadow:0 4px 0 #8E8474}
+  .btn-secondary{border:2px solid var(--wood);color:var(--ink);box-shadow:0 4px 0 var(--line)}
+  .btn-warm{background:var(--accent);border:2px solid var(--wood);box-shadow:0 4px 0 var(--wood)}
+  .row{gap:14px 10px}
+  .pill{border-radius:6px;background:var(--accent-soft);color:var(--accent-ink)}
+  .pill.locked{background:#DDD3BC;color:var(--muted)}
+  .tabs{background:var(--wood);border-radius:12px;padding:4px;border:2px solid var(--wood);box-shadow:0 3px 0 rgba(30,26,22,.25)}
+  .tabs .ind{border-radius:8px;background:linear-gradient(#E0B654,#C2952F);box-shadow:inset 0 0 0 1px #8A6A1E}
+  .tab{color:#D9CFBB;font-family:"Metamorphous",serif;font-size:1.0625rem;border-radius:8px}
+  .tab[aria-selected="true"]{color:var(--ink)}
+  .tab:focus-visible{outline-color:#F2D675;outline-offset:-5px}
+  .tab[aria-selected="true"]:focus-visible{outline-color:var(--wood)}
+  .tab .soon{font-family:"Inter",system-ui,sans-serif;font-size:.75rem;color:#BDB29C}
+  .tab[aria-selected="true"] .soon{color:#3A2E1A}
+  .sub{border:2px solid var(--wood);border-radius:var(--r);box-shadow:0 3px 0 rgba(30,26,22,.22);background:var(--card)}
+  .sub:hover:not(:disabled){border-color:var(--warm)}
+  .sub:disabled{border-style:dashed;border-color:#9C907C;box-shadow:none;opacity:.62}
+  /* Kapitelnummer als Rundschild */
+  .sub .num{flex:0 0 40px;height:40px;border-radius:50%;color:#FBF6E9;font-family:"Metamorphous",serif;font-weight:400;font-size:1rem;background:radial-gradient(circle,var(--warm) 0 13px,var(--gold) 13.5px 15.5px,var(--wood) 16px);box-shadow:0 2px 0 rgba(30,26,22,.3)}
+  .sub:disabled .num{background:radial-gradient(circle,#7B746A 0 13px,#B9AE98 13.5px 15.5px,#5A5148 16px)}
+  .sub .arrow{color:var(--wood)}
+  .fixbtn{border:2px dashed var(--warm);border-radius:10px}
+  .qtype{color:var(--warm-ink)}
+  /* Lernwörter im Quiz bleiben in der klaren Schrift: Titelschrift nur für Überschriften */
+  .prompt .word,.prompt .de,.prompt .pre{color:var(--ink)}
+  .prompt .gap{border-bottom-color:var(--gold)}
+  .choice{border:2px solid #8E8474;border-radius:10px;box-shadow:0 3px 0 rgba(30,26,22,.14)}
+  .choice .k{border-radius:50%;background:var(--wood);color:#E8C766;font-family:"Metamorphous",serif}
+  .choice.selected{border-color:var(--wood);background:#F0E3B8;box-shadow:0 3px 0 var(--wood)}
+  input.answer{border:2px solid #8E8474;border-radius:10px;background:#FBF7EC}
+  input.answer:focus{border-color:var(--wood)}
+  .key{border:2px solid var(--wood);border-radius:8px;box-shadow:0 3px 0 var(--wood);color:var(--ink);margin-bottom:3px}
+  .feedback{border-radius:10px;border-left:6px solid} .feedback.ok{border-color:var(--ok)} .feedback.bad{border-color:var(--bad)}
+  .progress{background:var(--wood);border-top:2px solid var(--gold);box-shadow:none}
+  .progress .meta{color:#D9CFBB}
+  .bar{background:#4A3B2C;border-radius:4px;height:12px}
+  .bar>i{background:linear-gradient(#E6BF5E,#C2952F);border-radius:4px}
+  .ring{background:conic-gradient(var(--warm) calc(var(--p)*1%),#D6CAB0 0);box-shadow:0 0 0 4px var(--gold),0 0 0 7px var(--wood);margin-top:14px;margin-bottom:18px}
+  .score .big{color:var(--ink)} .ring .big{font-size:1.9rem!important}
+  .switch{background:#A99D88} .switch[aria-checked="true"]{background:var(--ok)}
+  .note{background:#EFE2B9;color:var(--ink);border-radius:10px}
+  .toast{background:var(--wood);color:#F4EEDD;border-radius:8px}
+  .hero{position:relative} .hero .over,.hero h1{padding-right:74px}
+  .over{display:flex;align-items:center;gap:8px;margin-bottom:4px;font-family:"Metamorphous",serif;font-size:.9375rem;letter-spacing:.14em;text-transform:uppercase;color:var(--warm-ink)}
+  .over::before{content:"";width:22px;height:2px;background:var(--gold)}
+  .hero .orn{position:absolute;right:0;top:0;width:62px;height:62px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%232B2118'/%3E%3Ccircle cx='32' cy='32' r='26.5' fill='%23EFE6D0'/%3E%3Cpath d='M32 5.5A26.5 26.5 0 0 1 58.5 32H32zM32 58.5A26.5 26.5 0 0 1 5.5 32H32z' fill='%238E2A20'/%3E%3Ccircle cx='32' cy='32' r='26.5' fill='none' stroke='%23C2952F' stroke-width='2.5'/%3E%3Ccircle cx='32' cy='32' r='8' fill='%23C2952F' stroke='%232B2118' stroke-width='2'/%3E%3Cg fill='%232B2118'%3E%3Ccircle cx='32' cy='10' r='1.6'/%3E%3Ccircle cx='54' cy='32' r='1.6'/%3E%3Ccircle cx='32' cy='54' r='1.6'/%3E%3Ccircle cx='10' cy='32' r='1.6'/%3E%3Ccircle cx='47.6' cy='16.4' r='1.6'/%3E%3Ccircle cx='47.6' cy='47.6' r='1.6'/%3E%3Ccircle cx='16.4' cy='47.6' r='1.6'/%3E%3Ccircle cx='16.4' cy='16.4' r='1.6'/%3E%3C/g%3E%3C/svg%3E") center/contain no-repeat}
+  .foot::before{content:"";display:block;height:16px;margin:0 auto 14px;max-width:256px;background:var(--runes) center/auto 16px repeat-x;filter:brightness(.55)}
+  /* Lesbarkeit: Hilfetexte 16 px, Angaben 15 px */
+  .hint,.small,.note,.mistakes li{font-size:1rem} .sub .m{font-size:.9375rem} .foot{font-size:.875rem} .keys .tip{font-size:.875rem}
+  .toggle .lbl .small{font-size:.9375rem;white-space:nowrap}
+  .mistakes li span span.muted{font-size:.9375rem}
+  .bulk{margin-bottom:12px} .bulk .mini{flex:1 1 auto;border-radius:8px;border:2px solid var(--wood);color:var(--ink)}
+  .linkbtn{color:var(--warm-ink)}
+  /* Titelseite */
+  .splash{--sp-bg:#F7F2E5;--sp-ink:#1E1A16;--sp-grey:#5A5148;--sp-dark:#6E1F17;--sp-marker:#E3C777;--scene-h:max(20.84vw,175px);
+    background:radial-gradient(120% 85% at 50% 40%,#F7F2E5 0%,#EEE6D2 55%,#DDD0B2 100%)}
+  .splash::before{content:"";position:absolute;left:0;right:0;top:0;height:30px;z-index:1;background:var(--wood) var(--runes) repeat-x center/auto 16px;border-bottom:2px solid var(--gold)}
+  .sp-words{top:32px;bottom:var(--scene-h)}
+  .sp-words span{color:#243447} .sp-words span.w{color:#8E2A20}
+  .sp-main{padding-top:max(54px,calc(env(safe-area-inset-top) + 38px));padding-bottom:20px}
+  .sp-main::before{background:radial-gradient(closest-side,rgba(247,242,229,.97) 52%,rgba(247,242,229,0))}
+  .sp-thud{background:radial-gradient(closest-side,rgba(194,149,47,.45),rgba(194,149,47,0))}
+  .sp-title{font-family:"Metamorphous",serif;font-weight:400;letter-spacing:0;font-size:clamp(2.5rem,11.6vw,5.2rem)}
+  .sp-title .ln:nth-child(2)>span{color:#8E2A20}
+  .sp-start{background:#8E2A20;color:#FBF6E9;border:2px solid #2B2118;border-radius:10px;box-shadow:0 5px 0 #2B2118}
+  .sp-start:hover{background:#6E1F17}
+  .sp-start:focus-visible{outline-color:#2B2118}
+  .sp-start:active{transform:translateY(3px);box-shadow:0 2px 0 #2B2118}
+  .sp-scene{position:relative;flex:0 0 auto;display:block;align-self:center;width:max(100%,840px);height:auto;margin-bottom:-1px;animation:rise .9s ease .15s both}
+  /* Querformat am Handy: alles kleiner, damit der Start-Knopf sichtbar bleibt */
+  @media (max-height:520px){ .sp-scene,.sp-words{display:none} .splash{overflow-y:auto}
+    .sp-main{padding-top:42px;padding-bottom:12px} .sp-logo{font-size:1.7rem} .sp-title{margin-top:10px;font-size:clamp(1.9rem,13vh,3.2rem)} .sp-start{margin-top:14px;min-height:48px} }
+  @media (prefers-reduced-motion:reduce){ .sp-scene{animation:none!important} }
+  .ghost{flex:0 0 auto} .brand{min-width:0}
+  @media (max-width:360px){ .brand{font-size:.9375rem;gap:7px;letter-spacing:0} .ghost{padding:0 6px} .hero .over,.hero h1{padding-right:60px} .hero .orn{width:50px;height:50px} .tab{font-size:1rem} h1{font-size:1.9rem} }
 </style>
 </head>
 <body class="splash-on">
@@ -218,9 +318,40 @@
     <h1 class="sp-title"><span class="ln"><span>Norsk</span></span><span class="ln"><span>Ordtrener<i class="mark" aria-hidden="true"></i></span></span></h1>
     <button class="btn sp-start" id="spStart">Los geht's <span class="ar" aria-hidden="true">→</span></button>
   </div>
+  <svg class="sp-scene" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 250" aria-hidden="true" focusable="false">
+  <defs><clipPath id="vsail"><path d="M548 100H656Q668 138 650 176H554Q536 138 548 100Z"/></clipPath></defs>
+  <circle cx="602" cy="146" r="116" fill="none" stroke="#C2952F" stroke-width="2" opacity=".4"/>
+  <circle cx="602" cy="146" r="96" fill="#DDB04A"/>
+  <path fill="#A9AFA9" d="M0 250V150l60-22 60 14 70-38 60 22 70-30 60 24 70-12 70 26 80-22 80 26 80-38 80 28 70-36 70 30 80-16 70 26 70-14v132z"/>
+  <path fill="#56636C" d="M0 250v-80l80-30 70 22 80-54 70 42 60-18 50 18 40-52 60 62 60 30 60 10 70-8 60-34 60-72 70 66 60-20 70 46 70-22 100 30v84z"/>
+  <path fill="#F4EEDD" d="M230 108l-24 16 10-2 8 8 8-9 9 8 10-8zM450 98l-18 23 8-3 6 9 7-10 7 9 6-8 5 2zM820 86l-23 28 9-3 8 10 9-11 8 11 8-9 6 2z"/>
+  <path fill="#2A3742" d="M0 250v-64l90-16 90 14 90-18 80 20 80 10 30 2v52zM1200 250v-78l-90-14-80 18-80-10-70 20-80 10-30 2v52z"/>
+  <rect y="198" width="1200" height="52" fill="#18232E"/>
+  <!-- Langschiff -->
+  <g>
+    <path stroke="#15100C" stroke-width="3" stroke-linecap="round" d="M602 200V88M544 100h116"/>
+    <path fill="#EFE6D0" d="M548 100H656Q668 138 650 176H554Q536 138 548 100Z"/>
+    <g clip-path="url(#vsail)" fill="#8E2A20"><path d="M548 96h14v84h-14zM575 96h14v84h-14zM602 96h14v84h-14zM629 96h14v84h-14zM656 96h14v84h-14z"/></g>
+    <path fill="none" stroke="#15100C" stroke-width="1.5" d="M548 100H656Q668 138 650 176H554Q536 138 548 100Z"/>
+    <path stroke="#15100C" stroke-width="1.2" opacity=".7" d="M554 176L476 194M650 176L728 194"/>
+    <path fill="none" stroke="#15100C" stroke-width="8" stroke-linecap="round" d="M724 198C752 190 764 170 758 148"/>
+    <path fill="#15100C" d="M750 152l4-14 10-6 14 2 6 8-12 0 10 6-14 2z"/>
+    <circle cx="766" cy="139" r="1.6" fill="#DDB04A"/>
+    <path fill="none" stroke="#15100C" stroke-width="8" stroke-linecap="round" d="M480 198C452 190 442 170 448 152c3-9 16-8 15 1-1 6-8 5-8 1"/>
+    <path fill="#15100C" d="M474 190Q602 224 730 190L722 210Q602 238 482 210Z"/>
+    <path fill="none" stroke="#6B4A2B" stroke-width="1.4" d="M480 201Q602 232 724 201"/>
+    <g stroke="#15100C" stroke-width="1.6">
+      <circle cx="506" cy="200" r="8" fill="#8E2A20"/><circle cx="530" cy="204" r="8" fill="#DDB04A"/><circle cx="554" cy="207" r="8" fill="#EFE6D0"/><circle cx="578" cy="209" r="8" fill="#8E2A20"/><circle cx="602" cy="210" r="8" fill="#DDB04A"/><circle cx="626" cy="209" r="8" fill="#EFE6D0"/><circle cx="650" cy="207" r="8" fill="#8E2A20"/><circle cx="674" cy="204" r="8" fill="#DDB04A"/><circle cx="698" cy="200" r="8" fill="#EFE6D0"/>
+    </g>
+    <g fill="#15100C"><circle cx="506" cy="200" r="2"/><circle cx="530" cy="204" r="2"/><circle cx="554" cy="207" r="2"/><circle cx="578" cy="209" r="2"/><circle cx="602" cy="210" r="2"/><circle cx="626" cy="209" r="2"/><circle cx="650" cy="207" r="2"/><circle cx="674" cy="204" r="2"/><circle cx="698" cy="200" r="2"/></g>
+  </g>
+  <g stroke="#DDB04A" stroke-width="3" stroke-linecap="round"><path d="M566 236h72M580 244h44"/></g>
+  <g stroke="#EFE6D0" stroke-width="2.5" stroke-linecap="round" opacity=".45"><path d="M120 210h80M262 228h48M860 212h90M980 232h60M400 222h44M786 228h50M40 236h50M1090 214h60M440 240h40M740 242h44"/></g>
+  <g fill="none" stroke="#15100C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M700 60q6-7 12 0 6-7 12 0M736 80q4-5 8 0 4-5 8 0"/></g>
+</svg>
 </section>
 <div class="app" id="app"></div>
-<footer class="foot">Made in the Seetal by <b>Seetal<span>IT</span></b> · <a href="https://seetalit.ch" target="_blank" rel="noopener">seetalit.ch</a> · © 2026</footer>
+<footer class="foot">Made in the Seetal by <b>Seetal<span>IT</span></b> · <a href="https://seetalit.ch" target="_blank" rel="noopener">seetalit.ch</a> · <span style="white-space:nowrap">© 2026</span></footer>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -436,7 +567,8 @@ async function loadBooks(){
     BOOKS=loaded;
     UPCOMING=(Array.isArray(idx.upcoming)?idx.upcoming:[]).filter(u=>u&&u.id&&u.title&&!loaded.some(b=>b.id===u.id));
   }catch(e){
-    loadError="Die Wortlisten konnten nicht geladen werden ("+e.message+"). Bitte neu laden."; BOOKS=[];
+    try{ console.warn("Wortlisten:",e); }catch(_){}
+    loadError="Die Wortlisten konnten nicht geladen werden. Bitte Internetverbindung prüfen und neu laden."; BOOKS=[];
   }
 }
 async function boot(){
@@ -531,7 +663,7 @@ function renderHome(cfg){
   const mis=loadMistakes();
   const active=activeTab(cfg,true);
   const tab=tabList().find(t=>t.id===active);
-  const frag=h(`<div><h1>Wörter üben</h1><p class="muted" style="margin-top:6px">Wähle ein Kapitel. Jedes Wort kommt einmal, in zufälliger Reihenfolge.</p>${tabsHtml(active)}</div>`);
+  const frag=h(`<div><div class="hero"><span class="orn" aria-hidden="true"></span><p class="over"><span lang="nb">Velkommen</span></p><h1>Wörter üben</h1><p class="muted" style="margin-top:6px">Wähle ein Kapitel. Jedes Wort kommt einmal, in zufälliger Reihenfolge.</p></div>${tabsHtml(active)}</div>`);
   $app.appendChild(frag); wireTabs($app,active);
   const panel=h(`<div class="panel" id="panel" role="tabpanel" aria-labelledby="tab-${esc(active||"")}"></div>`).firstElementChild;
   $app.appendChild(panel);
@@ -672,7 +804,7 @@ function renderResult(){
   const n=run.results.length, c=run.results.filter(r=>r.ok).length, p=Math.round(c/n*100);
   const wrong=run.results.filter(r=>!r.ok);
   const k=subKey(run.book,run.unit,run.sub); const stored=loadMistakes()[k]||[];
-  const msg=p===100?"Perfekt! Alles richtig.":p>=80?"Stark – fast geschafft.":p>=50?"Guter Anfang. Übe die Fehler nochmals.":"Bleib dran – Übung macht den Meister.";
+  const msg=p===100?"Kjempebra! Alles richtig.":p>=80?"Bra jobba! Fast geschafft.":p>=50?"Guter Anfang. Übe die Fehler nochmals.":"Bleib dran – Übung macht den Meister.";
   const card=h(`<div class="card">
       <div class="score"><div class="ring" style="--p:${p}"><div><span class="big ${p<50?"low":""}" style="font-size:2.6rem">${p}%</span></div></div>
         <h2>${esc(msg)}</h2><p class="muted" style="margin-top:6px">${c} von ${n} richtig · ${esc(run.sub.title)}</p></div>
@@ -753,17 +885,31 @@ document.addEventListener("keydown",e=>{
 (function splash(){
   const el=document.getElementById("splash"); if(!el) return;
   const W=["hyggelig","koselig","fjord","tusen takk","eventyr","nordlys","vennskap","reise","hjerte","språk","lykke","midnattssol","brunost","friluftsliv","kjærlighet","drøm","hav","fjell"];
-  const box=document.getElementById("spWords"); const narrow=innerWidth<600; const n=narrow?12:18;
-  for(let i=0;i<n;i++){ // spread over a grid so words don't pile up; centre stays readable thanks to the soft backdrop
+  const box=document.getElementById("spWords"); const narrow=innerWidth<600; const n=narrow?8:18, cols=narrow?2:3;
+  // narrow screens: words only above the logo and below the button, so nothing sits behind the title; wide screens: grid around it
+  const m=el.querySelector(".sp-main"), lg=m.querySelector(".sp-logo"), bt=document.getElementById("spStart");
+  const topEnd=m.offsetTop+lg.offsetTop-box.offsetTop-30, botStart=m.offsetTop+bt.offsetTop+bt.offsetHeight-box.offsetTop+16, botEnd=box.clientHeight-30;
+  const midW=Math.max(lg.offsetWidth,bt.offsetWidth,...[...m.querySelectorAll(".sp-title .ln>span")].map(x=>x.offsetWidth))+56, midL=(box.clientWidth-midW)/2, midR=midL+midW;
+  const bands=narrow?[[6,topEnd],[botStart,botEnd]].filter(b=>b[1]-b[0]>=8):null;
+  let prev=null;
+  for(let i=0;i<n;i++){
+    if(narrow&&!bands.length) break;
     const s=document.createElement("span"); s.textContent=W[i%W.length]; if(i%3===0) s.className="w";
-    const col=i%3, row=Math.floor(i/3), rows=Math.ceil(n/3);
-    s.style.left=(col*33+4+Math.random()*16)+"%"; s.style.top=(row*(92/rows)+3+Math.random()*(60/rows))+"%";
-    s.style.fontSize=(narrow?0.95:1.1)+Math.random()*(narrow?0.6:0.9)+"rem";
+    const col=i%cols, row=Math.floor(i/cols), rows=Math.ceil(n/cols);
+    s.style.left=(narrow?col*48+5+Math.random()*10:col*33+4+Math.random()*16)+"%";
+    if(narrow){ const bd=bands[row%bands.length], j=Math.floor(row/bands.length), k=Math.max(1,Math.min(Math.ceil(rows/bands.length),Math.floor((bd[1]-bd[0])/46))); // one line of words per 46 px
+      if(j>=k) continue; s.style.top=Math.round(bd[0]+(bd[1]-bd[0])*(j+Math.random()*.2)/k)+"px"; }
+    else s.style.top=(row*(92/rows)+3+Math.random()*(60/rows))+"%";
+    s.style.fontSize=(narrow?0.9:1.1)+Math.random()*(narrow?0.4:0.9)+"rem";
     s.style.setProperty("--o",(0.10+Math.random()*0.09).toFixed(2));
     s.style.setProperty("--d",(7+Math.random()*6).toFixed(1)+"s");
     s.style.setProperty("--in",(0.2+Math.random()*1.2).toFixed(2)+"s");
-    s.style.setProperty("--x",Math.round(Math.random()*24-12)+"px"); s.style.setProperty("--y",Math.round(-14-Math.random()*22)+"px");
+    s.style.setProperty("--x",Math.round(Math.random()*24-12)+"px"); s.style.setProperty("--y",Math.round(narrow?-5-Math.random()*8:-14-Math.random()*22)+"px");
     box.appendChild(s);
+    const maxL=box.clientWidth-s.offsetWidth-16; if(s.offsetLeft>maxL) s.style.left=Math.max(4,maxL)+"px"; // never cut off at the right edge
+    if(narrow&&col>0&&prev&&prev.offsetLeft+prev.offsetWidth+10>s.offsetLeft) s.style.display="none"; // would run into its neighbour: leave it out
+    if(!narrow&&s.offsetLeft<midR&&s.offsetLeft+s.offsetWidth>midL&&s.offsetTop<botStart&&s.offsetTop+s.offsetHeight>topEnd) s.style.display="none"; // would sit behind logo, title or button
+    prev=s;
   }
   const start=()=>{
     if(el.classList.contains("out")) return;
